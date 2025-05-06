@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Products</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="my.css" />
+  <script src="cart.js" defer></script>
+</head>
+<body>
+  <div class="header">
+    <a class="btn" href="cart.html">View Cart</a>
+
+  </div>
+  <section id="products" class="products">
+    
+  
+    <div class="container">
+      <a href="index.html" class="btn" style="margin-bottom: 30px;">← Back to Home</a>
+
+      <h2 class="section-title" id="category-title"></h2>
+      <div class="product-grid" id="productGrid"></div>
+    </div>
+  </section>
+
+  <script>
+    const subcategories = {
+      sports: [
+        { name: "Cricket", image: "cricket.jpg", id: "cricket" },
+        { name: "Football", image: "football.jpg", id: "football" },
+        { name: "Badminton", image: "badminton.jpeg", id: "badminton" },
+        { name: "Gym", image: "gym.jpeg", id: "gym" }
+      ],
+      stationery: [
+        { name: "Notebook", image: "notebook.png", id: "notebook" },
+        { name: "Pens", image: "pens.jpeg", id: "pens" },
+        { name: "Art Supplies", image: "artsupplies.png", id: "artsupplies" },
+        { name: "Exam Pad", image: "pad.jpg", id: "pad" }
+      ],
+      poojaitems: [
+    { name: "Essentials", image: "pooja.jpg", id: "essentials" }
+  ],
+  cleaning: [
+    {name:"Cleaning_essentials" , image: "Cleaning_essentials", id: "Cessentials"}]
+  
+
+
+    };
+
+    const productsBySubcategory = {
+      cricket: [
+        { title: "Cricket Bat", image: "bat.jpg", price: "₹1200", desc: "Grade-A willow bat." },
+        { title: "Cricket Ball", image: "ball.jpg", price: "₹300", desc: "Leather cricket ball." }
+      ],
+      football: [
+        { title: "Football Jersey", image: "jersey.jpeg", price: "₹800", desc: "Team jersey for match play." }
+      ],
+      notebook: [
+        { title: "Ruled Notebook", image: "notebook.png", price: "₹60", desc: "100 pages, spiral-bound." }
+      ],
+      pens: [
+        { title: "Gel Pen Pack", image: "pens.jpeg", price: "₹100", desc: "Smooth flow gel pens." }
+      ],
+      Essentials: [
+    { title: "Matchbox", image: "matchbox.jpeg", price: "₹10", desc: "1 bunch (10 matchboxes)." },
+    { title: "Deepa Oil", image: "deepoil.jpeg", price: "₹120", desc: "1 litre pure lamp oil." },
+    { title: "Cotton Thread", image: "cotton.jpeg", price: "₹20", desc: "1 packet for wicks and rituals." },
+    { title: "Camphor", image: "camphor.jpeg", price: "₹30", desc: "Small box of puja camphor." },
+    { title: "Incense Sticks", image: "incense sticks.jpeg", price: "₹60", desc: "Big box of aromatic incense sticks." }
+  ],
+  Cleaning_essentials: [
+  {
+    title: "Dishwashing Liquid",
+    image: "dishliquid.jpeg",
+    price: "₹50 - ₹100",
+    desc: "2 bottles or 1 large bottle for tough grease removal."
+  },
+  {
+    title: "Dishwashing Powder",
+    image: "dishpowder.jpeg",
+    price: "₹60",
+    desc: "500g strong-action powder for utensils."
+  },
+  {
+    title: "Washing Powder",
+    image: "washpowder.jpeg",
+    price: "₹90",
+    desc: "1 kg detergent powder for clothes."
+  },
+  {
+    title: "Washing Soaps",
+    image: "washsoap.jpeg",
+    price: "₹75",
+    desc: "Pack of 5 laundry soaps."
+  },
+],
+      // Add more subcategories and their products here...
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get("category");
+    const subcategory = params.get("subcategory");
+
+    const titleElement = document.getElementById("category-title");
+    const grid = document.getElementById("productGrid");
+
+    if (!category || !subcategories[category]) {
+      titleElement.textContent = "Category not found.";
+      grid.innerHTML = "<p>Please select a valid category.</p>";
+    } else if (!subcategory) {
+      // Show subcategories
+      titleElement.textContent = `${category.charAt(0).toUpperCase() + category.slice(1)} Categories`;
+      subcategories[category].forEach(sub => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <img src="${sub.image}" alt="${sub.name}" class="product-image">
+          <div class="product-info">
+            <h3 class="product-title">${sub.name}</h3>
+            <p>Browse all ${sub.name} products</p>
+          </div>
+        `;
+        card.onclick = () => {
+          window.location.href = `products.html?category=${category}&subcategory=${sub.id}`;
+        };
+        grid.appendChild(card);
+      });
+    } else {
+      // Show products for subcategory
+      titleElement.textContent = `${subcategory.charAt(0).toUpperCase() + subcategory.slice(1)} Products`;
+
+      const products = productsBySubcategory[subcategory];
+
+      if (!products || products.length === 0) {
+        grid.innerHTML = "<p>No products available in this subcategory.</p>";
+      } else {
+        products.forEach(product => {
+          const card = document.createElement("div");
+          card.className = "product-card";
+          card.innerHTML = `
+            <img src="${product.image}" alt="${product.title}" class="product-image">
+            <div class="product-info">
+              <h3 class="product-title">${product.title}</h3>
+              <p>${product.desc}</p>
+              <div class="product-price">${product.price}</div>
+               <button class="btn" onclick="addToCart('${product.title}', '${product.price}', '${product.image}')">Add to Cart</button>
+
+
+            </div>
+           
+          `;
+          grid.appendChild(card);
+        });
+      }
+    }
+  </script>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Cart - Kumar Store</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="my.css" />
+  <script src="cart.js" defer></script>
+</head>
+<body>
+
+  
+
+  <!-- Cart Section -->
+  <section class="products" style="padding-top: 150px;">
+    <div class="container">
+        <a href="index.html" class="btn" style="margin-bottom: 30px;">← Back to Home</a>
+
+      <h2 class="section-title">Your Cart</h2>
+      <div id="cart-items" class="product-grid"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-about">
+         
+       
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; Made with love by Manoj Kumar Jain. 2025 Kumar Store. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const cartGrid = document.getElementById("cart-items");
+
+    function saveCart() {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      saveCart();
+      location.reload(); // refresh page to update view
+    }
+
+    if (cart.length === 0) {
+      cartGrid.innerHTML = "<p style='color:white;text-align:center;'>Your cart is empty.</p>";
+    } else {
+      cart.forEach((item, index) => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" class="product-image">
+          <div class="product-info">
+            <h3 class="product-title">${item.name}</h3>
+            <div class="product-price">${item.price}</div>
+            <button class="btn" onclick="removeFromCart(${index})">Remove</button>
+          </div>
+        `;
+        cartGrid.appendChild(card);
+      });
+    }
+  </script>
+
+</body>
+</html>

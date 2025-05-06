@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Products</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="my.css" />
+  <script src="cart.js" defer></script>
+</head>
+<body>
+    <div class="header">
+        <button class="btn" onclick="viewCart()">View Cart</button>
+      </div>
+    
+  <section id="products" class="products">
+    <div class="container">
+      <a href="index.html" class="btn" style="margin-bottom: 30px;">← Back to Home</a>
+
+      <h2 class="section-title" id="category-title"></h2>
+      <div id="subcategory-container"></div>
+      <div class="product-grid" id="productGrid"></div>
+    </div>
+  </section>
+
+  <script>
+    const productsByCategory = {
+      sports: {
+        cricket: [
+          {
+            title: "Cricket Kit",
+            image: "cricket.jpg",
+            price: "₹1500 - ₹5000",
+            desc: "Full cricket set including bat, pads, gloves, and ball."
+          }
+        ],
+        football: [
+          {
+            title: "Football",
+            image: "football.jpg",
+            price: "₹600 - ₹2500",
+            desc: "Durable, weather-resistant footballs for all pitch types."
+          }
+        ],
+        badminton: [
+          {
+            title: "Badminton Racket Set",
+            image: "badminton.jpeg",
+            price: "₹800 - ₹1800",
+            desc: "Lightweight rackets with shuttlecocks for indoor/outdoor play."
+          }
+        ],
+        gym: [
+          {
+            title: "Dumbbell Set",
+            image: "gym.jpeg",
+            price: "₹1000 - ₹3000",
+            desc: "Adjustable dumbbells for strength training at home."
+          }
+        ]
+      },
+      stationery: {
+        notebook: [
+          {
+            title: "Notebook",
+            image: "notebook.png",
+            price: "₹50 - ₹200",
+            desc: "Spiral-bound notebooks with ruled pages for school or office."
+          }
+        ],
+        pens: [
+          {
+            title: "Pen Set",
+            image: "pens.jpeg",
+            price: "₹100 - ₹600",
+            desc: "Assorted gel and ball pens with smooth ink flow."
+          }
+        ],
+        art: [
+          {
+            title: "Art Supplies Kit",
+            image: "artsupplies.png",
+            price: "₹300 - ₹1500",
+            desc: "Colors, brushes, and drawing tools for beginners and artists."
+          }
+        ],
+        pad: [
+          {
+            title: "Exam Pad",
+            image: "pad.jpg",
+            price: "₹80 - ₹200",
+            desc: "Sturdy writing pads with clip for holding papers."
+          }
+        ]
+      },
+      poojaitems: {
+        Essentials:[
+          {
+            title: "Essentials",
+            image: "Essentials.jpg",
+            price: "₹80 - ₹200",
+            desc: "Pooja Essentials"
+          }
+
+        ]
+      },
+      cleaning: {Cleaning_essentials:[
+          {
+            title: "Cleaning Essentials",
+            image: "Essentials.jpg",
+            price: "₹80 - ₹200",
+            desc: "Pooja Essentials"
+          }
+
+        ]
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get("category");
+    const subcategory = params.get("subcategory");
+
+    const title = category
+      ? category.charAt(0).toUpperCase() + category.slice(1)
+      : "Products";
+
+    document.getElementById("category-title").textContent = `${title} Products`;
+
+    const subcategoryContainer = document.getElementById("subcategory-container");
+    const grid = document.getElementById("productGrid");
+
+    if (category && productsByCategory[category]) {
+      if (!subcategory) {
+        // Show subcategory cards
+        const subs = productsByCategory[category];
+        Object.keys(subs).forEach(sub => {
+          const subCard = document.createElement("div");
+          subCard.className = "product-card";
+          subCard.innerHTML = `
+            <div class="product-info">
+              <h3 class="product-title">${sub.charAt(0).toUpperCase() + sub.slice(1)}</h3>
+              <p>View all ${sub} items</p>
+            </div>
+          `;
+          subCard.onclick = () =>
+            window.location.href = `products.html?category=${category}&subcategory=${sub}`;
+          subcategoryContainer.appendChild(subCard);
+        });
+      } else if (productsByCategory[category][subcategory]) {
+        // Show products in selected subcategory
+        productsByCategory[category][subcategory].forEach(product => {
+          const card = document.createElement("div");
+          card.className = "product-card";
+          card.innerHTML = `
+            <img src="${product.image}" alt="${product.title}" class="product-image">
+            <div class="product-info">
+              <h3 class="product-title">${product.title}</h3>
+              <p>${product.desc}</p>
+              <div class="product-price">${product.price}</div>
+            </div>
+            <button class="btn" onclick="addToCart('${product.title}', '${product.price}', '${product.image}')">Add to Cart</button>
+
+          `;
+          grid.appendChild(card);
+        });
+      } else {
+        grid.innerHTML = "<p>No products found for this subcategory.</p>";
+      }
+    } else {
+      grid.innerHTML = "<p>Invalid or missing category.</p>";
+    }
+  </script>
+</body>
+</html>
